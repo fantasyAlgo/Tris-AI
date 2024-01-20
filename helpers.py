@@ -1,10 +1,10 @@
-def diagonalCheck(state, dir=False):
-    piece = -1;
-    if ((state[0][0] if dir else state[2][0]) >= 1):
-        piece = (state[0][0] if dir else state[2][0])
+def diagonalCheck(state, pos, dir=False):
+    piece = -1
+    if (state[pos[0]][pos[1]] >= 1):
+        piece = state[pos[0]][pos[1]]
     for i in range(3):
-        if ((state[i][i] if dir else state[2-i][i]) != piece):
-            return -1;
+        if ((state[pos[0]+i][pos[1]+i] if dir else state[pos[0]-i][pos[1]+i]) != piece):
+            return -1
     return piece
 
 def horizontalVerticalCheck(state, i, j, dir=False):
@@ -13,24 +13,25 @@ def horizontalVerticalCheck(state, i, j, dir=False):
         piece = state[i][j]
     for k in range(3):
         if (state[i+k if dir else i][j if dir else j+k] != piece):
-            return -1;
+            return -1
     return piece
 
-def isFinished(state):
-    dig0 = diagonalCheck(state, False)
-    if dig0 > -1:
-        return dig0
+def isFinished(state, sizeBoard=3):
+    for i in range(sizeBoard-2):
+        for j in range(sizeBoard-2):
+            dig0 = diagonalCheck(state, [sizeBoard-1-i,j], False)
+            dig1 = diagonalCheck(state, [i,j], True)
+            if dig0 > -1:
+                return dig0
+            if dig1 > -1:
+                return dig1
 
-    dig1 = diagonalCheck(state, True)
-    if dig1 > -1:
-        return dig1
-
-    for i in range(3):
-        pos = horizontalVerticalCheck(state, 0, i, True)
-        if pos > -1:
-            return pos
-    for i in range(3):
-        pos = horizontalVerticalCheck(state, i, 0, False)
-        if pos > -1:
-            return pos
+    for i in range(sizeBoard):
+        for j in range(sizeBoard-2):
+            pos0 = horizontalVerticalCheck(state, j, i, True)
+            pos1 = horizontalVerticalCheck(state, i, j, False)
+            if pos0 > -1:
+                return pos0
+            if pos1 > -1:
+                return pos1
     return -1
