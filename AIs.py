@@ -1,6 +1,6 @@
-
 from helpers import isFinished
-def minimax(state, piecesCountL=0, depth=4, sizeBoard = 3, isMax=True):
+from obligatedMoves import isObligatedMove
+def minimax(state, piecesCountL=0, depth=4, sizeBoard=1, isMax=True):
     result = isFinished(state, sizeBoard)
 
     if result != -1:
