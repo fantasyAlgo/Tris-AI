@@ -1,8 +1,10 @@
-def diagonalCheck(state, pos, dir=False):
+def diagonalCheck(state, pos, dir=False, missingPos = False):
     piece = -1
+    j = 0
     if (state[pos[0]][pos[1]] >= 1):
+        j = 1
         piece = state[pos[0]][pos[1]]
-    for i in range(3):
+    for i in range(j, 3):
         if ((state[pos[0]+i][pos[1]+i] if dir else state[pos[0]-i][pos[1]+i]) != piece):
             return -1
     return piece
