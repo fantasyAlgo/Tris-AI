@@ -1,5 +1,6 @@
 import pygame
 from helpers import isFinished
+from obligatedMoves import isObligatedMove
 import AIs
 import numpy as np
 
@@ -51,7 +52,6 @@ def drawBoard():
                 drawO([size3*i+size3/2, size3*j+size3/2], squareSize/(7+sizeBoard))
 
 
-
 def choosePiece(board, piecesCount, sizeBoard = 3):
     move = AIs.choosePiece(board, piecesCount, howDeep, sizeBoard)
     board[move[0]][move[1]] = 2
@@ -59,32 +59,47 @@ def choosePiece(board, piecesCount, sizeBoard = 3):
 player = 0
 canDo = True
 gameFinished = False
+
+def restart():
+    gameFinished = False
+    board = [[0 for i in range(sizeBoard)] for i in range(sizeBoard)]
+    
 while carryOn:
 
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
               carryOn = False # Flag that we are done so we can exit the while loop
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            gameFinished = False
+            board = [[0 for i in range(sizeBoard)] for i in range(sizeBoard)]
+            piecesCount = 0
 
     screen.fill(BackgroundColor)
     x,y = pygame.mouse.get_pos()
+    events = pygame.event.get()
 
     if canDo and pygame.mouse.get_pressed()[0] and board[int(x/size3)][int(y/size3)] == 0 and not gameFinished:
         board[int(x/size3)][int(y/size3)] = 1
         piecesCount += 1
+        #print(np.matrix(board))
+        #print(isObligatedMove(board, sizeBoard))
         if piecesCount < sizeBoard*sizeBoard:
-            choosePiece(board, piecesCount)
+            choosePiece(board, piecesCount, sizeBoard)
             piecesCount += 1
         canDo = False
     if not pygame.mouse.get_pressed()[0]:
         canDo = True
     drawBoard()
+    #print(np.matrix(board))
     resultedGame = isFinished(board, sizeBoard)
     if resultedGame != -1 and not gameFinished:
         gameFinished = True
         print(("X" if resultedGame == 1 else "O") + " has won!")
+        print("Press enter to start another game and esc to exit")
     if ( piecesCount >= sizeBoard*sizeBoard and not gameFinished):
         gameFinished = True
         print("Tie!")
+        print("Press enter to start another game and esc to exit")
 
     pygame.display.flip()
     clock.tick(60)
