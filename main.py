@@ -81,16 +81,15 @@ while carryOn:
     if canDo and pygame.mouse.get_pressed()[0] and board[int(x/size3)][int(y/size3)] == 0 and not gameFinished:
         board[int(x/size3)][int(y/size3)] = 1
         piecesCount += 1
-        #print(np.matrix(board))
-        #print(isObligatedMove(board, sizeBoard))
         if piecesCount < sizeBoard*sizeBoard:
             choosePiece(board, piecesCount, sizeBoard)
             piecesCount += 1
         canDo = False
+
     if not pygame.mouse.get_pressed()[0]:
         canDo = True
+        
     drawBoard()
-    #print(np.matrix(board))
     resultedGame = isFinished(board, sizeBoard)
     if resultedGame != -1 and not gameFinished:
         gameFinished = True
@@ -106,4 +105,3 @@ while carryOn:
 
 #Once we have exited the main program loop we can stop the game engine:
 pygame.quit()
-
