@@ -12,8 +12,10 @@ def minimax(state, piecesCountL=0, depth=4, sizeBoard=1, alpha=0, beta=0, isMax=
         obligatedVal = isObligatedMove(state, sizeBoard)
         if obligatedVal != -1:
             state[obligatedVal[0]][obligatedVal[1]] = 2
-            maxV = max(minimax(state, piecesCountL+1, depth-1, sizeBoard, alpha, beta), maxV)
+            eval = minimax(state, piecesCountL+1, depth-1, sizeBoard, alpha, beta)
+            maxV = max(eval, maxV)
             state[obligatedVal[0]][obligatedVal[1]] = 0
+            alpha = max(alpha, eval)
             return maxV
         
         for x in range(sizeBoard):
@@ -24,16 +26,18 @@ def minimax(state, piecesCountL=0, depth=4, sizeBoard=1, alpha=0, beta=0, isMax=
                     maxV = max(eval, maxV)
                     state[x][y] = 0
                     alpha = max(alpha, eval)
-                    if beta <= alpha:
-                        return maxV
+                    #if beta <= alpha:
+                    #    return maxV
         return maxV
     else:
         minV = 100000
         obligatedVal = isObligatedMove(state, sizeBoard, piece = 2)
         if obligatedVal != -1:
             state[obligatedVal[0]][obligatedVal[1]] = 1
-            minV = min(minimax(state, piecesCountL+1, depth-1, sizeBoard, alpha, beta, True), minV)
+            eval = minimax(state, piecesCountL+1, depth-1, sizeBoard, alpha, beta, True)
+            minV = min(eval, minV)
             state[obligatedVal[0]][obligatedVal[1]] = 0
+            beta = min(beta, eval)
             return minV
         
         for x in range(sizeBoard):
@@ -44,15 +48,15 @@ def minimax(state, piecesCountL=0, depth=4, sizeBoard=1, alpha=0, beta=0, isMax=
                     minV = min(eval, minV)
                     state[x][y] = 0
                     beta = min(beta, eval)
-                    if beta <= alpha:
-                        return minV  
+                    #if beta <= alpha:
+                    #    return minV  
         return minV
     
 def choosePiece(board, piecesCount, howDeep, sizeBoard = 3):
     bestMove = [0,0]
     currentValue = -1000000
     bestValue = -1000000
-    obligatedVal = isObligatedMove(board, sizeBoard)
+    obligatedVal = isObligatedMove(board, sizeBoard, 2)
     if obligatedVal != -1:
         return obligatedVal
     for x in range(sizeBoard):
@@ -66,4 +70,5 @@ def choosePiece(board, piecesCount, howDeep, sizeBoard = 3):
                 if currentValue > bestValue:
                     bestMove = [x, y]
                     bestValue = currentValue
+    #print(f"best value: {bestValue}")
     return bestMove

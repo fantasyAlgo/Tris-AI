@@ -1,3 +1,4 @@
+# trying github!
 import pygame
 from helpers import isFinished
 from obligatedMoves import isObligatedMove
@@ -29,7 +30,7 @@ size3 = squareSize/sizeBoard
 board = [[0 for i in range(sizeBoard)] for i in range(sizeBoard)]
 piecesCount = 0
 
-levels = [2, 5, 7, 9]
+levels = [2, 5, 7, 10]
 howDeep = levels[chosenLevel]
 def drawX(pos, size = 100):
     pygame.draw.line(screen, WHITE, pos, [pos[0]+size, pos[1]+size], width=5)
@@ -59,11 +60,7 @@ def choosePiece(board, piecesCount, sizeBoard = 3):
 player = 0
 canDo = True
 gameFinished = False
-
-def restart():
-    gameFinished = False
-    board = [[0 for i in range(sizeBoard)] for i in range(sizeBoard)]
-    
+obl = 0
 while carryOn:
 
     for event in pygame.event.get(): # User did something
@@ -77,7 +74,6 @@ while carryOn:
     screen.fill(BackgroundColor)
     x,y = pygame.mouse.get_pos()
     events = pygame.event.get()
-
     if canDo and pygame.mouse.get_pressed()[0] and board[int(x/size3)][int(y/size3)] == 0 and not gameFinished:
         board[int(x/size3)][int(y/size3)] = 1
         piecesCount += 1
