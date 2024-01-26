@@ -32,6 +32,7 @@ piecesCount = 0
 
 levels = [2, 5, 7, 10]
 howDeep = levels[chosenLevel]
+Ai = AIs.SimpleAi(sizeBoard, howDeep, sizeBoard)
 def drawX(pos, size = 100):
     pygame.draw.line(screen, WHITE, pos, [pos[0]+size, pos[1]+size], width=5)
     pygame.draw.line(screen, WHITE,  [pos[0]+size, pos[1]], [pos[0], pos[1]+size], width=5)
@@ -53,8 +54,8 @@ def drawBoard():
                 drawO([size3*i+size3/2, size3*j+size3/2], squareSize/(7+sizeBoard))
 
 
-def choosePiece(board, piecesCount, sizeBoard = 3):
-    move = AIs.choosePiece(board, piecesCount, howDeep, sizeBoard)
+def choosePiece(board, piecesCount):
+    move = Ai.choosePiece(board, piecesCount)
     board[move[0]][move[1]] = 2
 
 player = 0
@@ -62,7 +63,6 @@ canDo = True
 gameFinished = False
 obl = 0
 while carryOn:
-
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
               carryOn = False # Flag that we are done so we can exit the while loop
@@ -77,8 +77,8 @@ while carryOn:
     if canDo and pygame.mouse.get_pressed()[0] and board[int(x/size3)][int(y/size3)] == 0 and not gameFinished:
         board[int(x/size3)][int(y/size3)] = 1
         piecesCount += 1
-        if piecesCount < sizeBoard*sizeBoard:
-            choosePiece(board, piecesCount, sizeBoard)
+        if piecesCount < sizeBoard*sizeBoard and isFinished(board, sizeBoard, sizeBoard) == -1:
+            choosePiece(board, piecesCount)
             piecesCount += 1
         canDo = False
 
@@ -86,7 +86,7 @@ while carryOn:
         canDo = True
         
     drawBoard()
-    resultedGame = isFinished(board, sizeBoard)
+    resultedGame = isFinished(board, sizeBoard, sizeBoard)
     if resultedGame != -1 and not gameFinished:
         gameFinished = True
         print(("X" if resultedGame == 1 else "O") + " has won!")
