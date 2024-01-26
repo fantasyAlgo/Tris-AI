@@ -1,4 +1,3 @@
-# trying github!
 import pygame
 from helpers import isFinished
 from obligatedMoves import isObligatedMove
@@ -17,7 +16,7 @@ BackgroundColor = (89, 86, 76)
 squareSize = int(input("Size of the window: "))
 sizeBoard = int(input("Size of the board (3x3, 4x4 and so on): "))
 chosenLevel = int(input("Select the diffulty (0 easy, 1 medium, 2 hard, 3 no-win): "))
-
+pieceToCheck = sizeBoard
 size = (squareSize, squareSize)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption(f"{sizeBoard}x{sizeBoard} Tris")
@@ -32,7 +31,7 @@ piecesCount = 0
 
 levels = [2, 5, 7, 10]
 howDeep = levels[chosenLevel]
-Ai = AIs.SimpleAi(sizeBoard, howDeep, sizeBoard)
+Ai = AIs.SimpleAi(sizeBoard, howDeep, pieceToCheck)
 def drawX(pos, size = 100):
     pygame.draw.line(screen, WHITE, pos, [pos[0]+size, pos[1]+size], width=5)
     pygame.draw.line(screen, WHITE,  [pos[0]+size, pos[1]], [pos[0], pos[1]+size], width=5)
@@ -77,7 +76,7 @@ while carryOn:
     if canDo and pygame.mouse.get_pressed()[0] and board[int(x/size3)][int(y/size3)] == 0 and not gameFinished:
         board[int(x/size3)][int(y/size3)] = 1
         piecesCount += 1
-        if piecesCount < sizeBoard*sizeBoard and isFinished(board, sizeBoard, sizeBoard) == -1:
+        if piecesCount < sizeBoard*sizeBoard and isFinished(board, sizeBoard, pieceToCheck) == -1:
             choosePiece(board, piecesCount)
             piecesCount += 1
         canDo = False
@@ -86,7 +85,7 @@ while carryOn:
         canDo = True
         
     drawBoard()
-    resultedGame = isFinished(board, sizeBoard, sizeBoard)
+    resultedGame = isFinished(board, sizeBoard, pieceToCheck)
     if resultedGame != -1 and not gameFinished:
         gameFinished = True
         print(("X" if resultedGame == 1 else "O") + " has won!")
