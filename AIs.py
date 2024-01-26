@@ -4,9 +4,9 @@ import numpy as np
 
 
 class SimpleAi:
-    def __init__(self, sizeBoard, depth, pieceToCheck):
+    def __init__(self, sizeBoard, pieceToCheck, args):
         self.sizeBoard = sizeBoard
-        self.depth = depth
+        self.depth = args[0]
         self.pieceToCheck = pieceToCheck
 
     def minimax(self, state, piecesCountL=0, howDeep=-10, alpha=0, beta=0, isMax=False):
