@@ -88,7 +88,7 @@ int minimax(vector<vector<int>> state, int piecesCount = 0, int depth = 4, bool 
     int result = isFinished(state);
     //printTris(state);
     if (result != -1)
-        return (result == 1 ? -1*(9-piecesCount) : 1);
+        return (result == 1 ? -1*(9-piecesCount+1) : 1);
 
     if (maxPlayer){
         int maxV = -100000;
