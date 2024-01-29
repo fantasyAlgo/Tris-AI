@@ -3,6 +3,7 @@ from helpers import isFinished
 from obligatedMoves import isObligatedMove
 import AIs
 import numpy as np
+import time
 
 BLACK = ( 0, 0, 0)
 WHITE = ( 255, 255, 255)
@@ -38,6 +39,8 @@ class TrisNxN:
         self.canDo = True
         self.gameFinished = False
         self.obl = 0
+
+        self.timeSleep = 0.0
         
     def drawX(self, pos, size = 100):
         pygame.draw.line(self.screen, WHITE, pos, [pos[0]+size, pos[1]+size], width=5)
@@ -73,9 +76,11 @@ class TrisNxN:
 
     def choosePiece(self, pl = 2):
         move = (self.enemyAI if pl == 2 else self.playerAI).choosePiece(self.board, self.piecesCount)
-        self.board[move[0]][move[1]] = pl
+        if self.board[move[0]][move[1]] == 0:
+            self.board[move[0]][move[1]] = pl
 
     def moveProcess(self):
+        if (self.gameFinished or self.piecesCount >= self.sizeBoard*self.sizeBoard): return
         size3Loc = self.size3
         x,y = pygame.mouse.get_pos()
         if self.playerAI == "input":
@@ -88,7 +93,7 @@ class TrisNxN:
             self.choosePiece(1)
             self.piecesCount += 1
             self.turn = True
-
+            time.sleep(self.timeSleep)
         if (isFinished(self.board, self.sizeBoard, self.pieceToCheck) != -1 and self.piecesCount < self.sizeBoard*self.sizeBoard): return
         if self.enemyAI == "input":
             if self.turn and self.canDo and pygame.mouse.get_pressed()[0] and self.board[int(x/size3Loc)][int(y/size3Loc)] == 0 and not self.gameFinished:
@@ -100,6 +105,7 @@ class TrisNxN:
             self.choosePiece()
             self.piecesCount += 1
             self.turn = False
+            time.sleep(self.timeSleep)
 
         if not pygame.mouse.get_pressed()[0]: self.canDo = True
 
@@ -128,7 +134,7 @@ chosenLevel = int(input("Select the diffulty (0 easy, 1 medium, 2 hard, 3 no-win
 pieceToCheck = sizeBoard
 
 levels = [2, 5, 7, 10]
-tris = TrisNxN(squareSize, sizeBoard, pieceToCheck, AIs.SimpleAi, "input", levels[chosenLevel], 0)
+tris = TrisNxN(squareSize, sizeBoard, pieceToCheck, AIs.SimpleAi, "input", levels[chosenLevel], 3)
 
 while tris.carryOn:
     tris.update()
