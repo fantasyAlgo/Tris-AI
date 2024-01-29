@@ -1,7 +1,7 @@
 from helpers import isFinished
 from obligatedMoves import isObligatedMove
 import numpy as np
-
+import random
 
 class SimpleAi:
     def __init__(self, sizeBoard, pieceToCheck, args):
@@ -85,3 +85,16 @@ class SimpleAi:
                             bestMove = [x, y]
                             bestValue = currentValue
             return bestMove 
+
+class randomAI:
+    def __init__(self, sizeBoard, pieceToCheck, args):
+        if (pieceToCheck != 3):
+            print("pieceToCheck have to be 3");
+        self.sizeBoard = sizeBoard
+        self.pieceToCheck = pieceToCheck
+    def choosePiece(self, board, piecesCount):
+        i,j = random.randint(0,2),random.randint(0,2)
+        while (board[i][j] != 0):
+            i,j = random.randint(0,2),random.randint(0,2)
+        return [i,j]
+

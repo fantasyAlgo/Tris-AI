@@ -83,13 +83,11 @@ int isFinished(vector<vector<int>> state){
 
 // To-do in vs
 int minimax(vector<vector<int>> state, int piecesCount = 0, int depth = 4, bool maxPlayer = 0){
+    int result = isFinished(state);
+    if (result != -1)
+        return (result == 1 ? -1*(9-piecesCount + 1) : 1);
     if (piecesCount >= 9 || depth == 0)
         return 0;
-    int result = isFinished(state);
-    //printTris(state);
-    if (result != -1)
-        return (result == 1 ? -1*(9-piecesCount) : 1);
-
     if (maxPlayer){
         int maxV = -100000;
         for (int x = 0; x < 3; x++){
@@ -146,12 +144,14 @@ int main(){
     while (isFinished(matrix) == -1 && piecesCount < 9){
         cout << "Choose the piece in i-j coord:" << endl;
         cin >> i >> j;
-        matrix[i][j] = 1;
-        piecesCount += 1;
-        if (piecesCount < 9 && isFinished(matrix) == -1)
-            choosePiece();
-        printTris();
-        piecesCount += 1;
+        if (matrix[i][j] == 0){
+            matrix[i][j] = 1;
+            piecesCount += 1;
+            if (piecesCount < 9 && isFinished(matrix) == -1)
+                choosePiece();
+            printTris();
+            piecesCount += 1;
+        }
     }
     int gameEnd = isFinished(matrix);
     if (gameEnd != -1)
