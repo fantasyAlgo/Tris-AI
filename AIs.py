@@ -1,5 +1,6 @@
-from helpers import isFinished
-from obligatedMoves import isObligatedMove
+from Agents.helpers import isFinished
+from Agents.obligatedMoves import isObligatedMove
+from Agents.MCTS import *
 import numpy as np
 import random
 
@@ -86,15 +87,70 @@ class SimpleAi:
                             bestValue = currentValue
             return bestMove 
 
-class randomAI:
+class IterativeAI:
+    def __init__(self, sizeBoard, pieceToCheck, args):
+        self.sizeBoard = sizeBoard
+        self.pieceToCheck = pieceToCheck
+        self.depth = args[0]
+    def choosePiece(self, board, piecesCount):
+        for i in range(9):
+            if board[i//3][i%3] == 0:
+                return [i//3, i%3]
+        return [0,0]
+    
+class RandomAI:
     def __init__(self, sizeBoard, pieceToCheck, args):
         if (pieceToCheck != 3):
             print("pieceToCheck have to be 3");
         self.sizeBoard = sizeBoard
         self.pieceToCheck = pieceToCheck
     def choosePiece(self, board, piecesCount):
+        available = []
+        for i in range(9):
+            if board[i//3][i%3] == 0:
+                available.append(i)
+        i = random.choice(available)
+        return [i//3, i%3]
+    
+class DontCheckAI:
+    def __init__(self, sizeBoard, pieceToCheck, args):
+        if (pieceToCheck != 3):
+            print("pieceToCheck have to be 3");
+        self.sizeBoard = sizeBoard
+        self.pieceToCheck = pieceToCheck
+    def choosePiece(self, board, piecesCount):
+        obligatedVal = isObligatedMove(board, self.sizeBoard, self.pieceToCheck, 2)
+        if obligatedVal != -1:
+            return obligatedVal
+        obligatedVal = isObligatedMove(board, self.sizeBoard, self.pieceToCheck)
+        if obligatedVal != -1:
+            return obligatedVal
         i,j = random.randint(0,2),random.randint(0,2)
         while (board[i][j] != 0):
             i,j = random.randint(0,2),random.randint(0,2)
         return [i,j]
 
+def softmax(x):
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum()
+
+# NeuralAI uses a neural network (with weights as input) to choose the next move
+class NeuralAI():
+    def __init__(self, sizeBoard, pieceToCheck, args):
+        self.weights = np.random.rand(9, 9)
+        #self.biases = np.random.rand(9)
+    def propagate(self, state):
+        return softmax(np.dot(state, self.weights)) # + self.biases
+    def choosePiece(self, board, piecesCount):
+        state = np.array(board).reshape(1, 9)
+        result = np.argmax(self.propagate(state))
+        return [int(result/3), int(result)%3]
+
+# Only for 3x3 boards
+class MCTSAI:
+    def __init__(self, sizeBoard, pieceToCheck, args):
+        self.sizeBoard = sizeBoard
+        self.pieceToCheck = pieceToCheck
+        #self.depth = args[0]
+    def choosePiece(self, board, piecesCount):
+        return MCTS(board, 2, piecesCount, 1000)
